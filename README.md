@@ -14,7 +14,7 @@
     saveCoverage(jsCoverage, nyc_output_path);
 
 # 等所有自动化用例执行结束，需要通过另一个脚本，来生成自动化的覆盖率
-    output_coverage.js文件：
+### output_coverage.js文件：
     const pti = require('puppeteer-coverage');
     const pathLib = require('path');
 
