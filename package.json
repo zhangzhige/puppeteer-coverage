@@ -1,6 +1,12 @@
 {
   "name": "puppeteer-coverage",
-  "version": "0.0.7",
+  "version": "0.0.10",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zhangzhige/puppeteer-coverage.git"
+  },
+  "homepage": "https://github.com/zhangzhige/puppeteer-coverage",
   "dependencies": {},
   "devDependencies": {
     "fs": "0.0.1-security",
