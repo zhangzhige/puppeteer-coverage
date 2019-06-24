@@ -2,8 +2,6 @@ const fs = require('fs');
 const mkdirp = require('mkdirp');
 const pathLib = require('path');
 
-const storagePath = '../../../.nyc_output/temp_coverage';
-
 function hash(text) {
   let hash = 5381, index = text.length;
   while (index) {
@@ -12,16 +10,15 @@ function hash(text) {
   return hash >>> 0
 }
 
-function rewritePath(path) {
+function rewritePath(path, nyc_output_path) {
   const filePath = 'temp_' + hash(path);
-  mkdirp.sync(storagePath);
-  const parsedPath = pathLib.resolve(__dirname, storagePath, filePath);
-  return parsedPath
+  mkdirp.sync(pathLib.resolve(nyc_output_path, 'temp_coverage'));
+  return pathLib.resolve(nyc_output_path, 'temp_coverage', filePath);
 }
 
-function saveCoverage(coverageInfo) {
+function saveCoverage(coverageInfo, nyc_output_path) {
   coverageInfo.forEach((item) => {
-    let parsedPath = rewritePath(item.url);
+    let parsedPath = rewritePath(item.url, nyc_output_path);
     const rangeFilePath = parsedPath + '/range/' + new Date().getTime() + Math.floor(Math.random() * 10000);
     console.log('parsedPath=', parsedPath, rangeFilePath);
 
