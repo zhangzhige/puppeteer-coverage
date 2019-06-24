@@ -1,6 +1,9 @@
 # puppeteer-coverage
 
 在项目使用自动化测试中，采用的是puppeteer方案，但是在做覆盖率统计时候，puppeteer-to-istanbul无法解析源代码。因为我们项目是经过webpack编译之后的代码。需要对应的将编译后的js还原成源代码，再来统计覆盖率数据。
+# First
+你需要编译一个没有压缩和带sourcemap的js生成物。webpack编译时候不要使用webpack-parallel-uglify-plugin。因为压缩后的代码是无法正确还原的。
+sourcemap是我们必须要用来将dist还原成src的。
 
 # 如何使用
     npm install puppeteer-coverage --save-dev
