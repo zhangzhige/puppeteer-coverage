@@ -5,6 +5,59 @@
 你需要编译一个没有压缩和带sourcemap的js生成物。webpack编译时候不要使用webpack-parallel-uglify-plugin。因为压缩后的代码是无法正确还原的。
 sourcemap是我们必须要用来将dist还原成src的。
 
+# 测试用例如何加载webpack编译后的html和js。
+你需要在PuppeteerEnvironment里面设置请求拦截。一个示例如下：
+
+        browser.openNewPage = async function (mockRequest) {
+          const page = await browser.newPage();
+          await page.setRequestInterception(true);
+          page.on('request', interceptedRequest => {
+            const url = interceptedRequest.url();
+            const html_regex = /promotion\/readtemplate\?t=([^&]+)/;
+            if (html_regex.test(url)) {
+              let module_path = RegExp.$1;
+              const file_path = path.resolve(__dirname, '../../dist/html/' + module_path + '.html');
+              console.log('file_path=', file_path);
+              fs.readFile(file_path, 'utf8', function (err, data) {
+                if (err) {
+                  interceptedRequest.continue();
+                } else {
+                  interceptedRequest.respond({
+                    body: data
+                  });
+                }
+              });
+            } else {
+              let regexp = /promotion\/res\/htmledition\/js\/(.+\.(js|css))/;
+              if (regexp.test(url)) {
+                const module_path = RegExp.$1;
+                const file_path = path.resolve(__dirname, '../../dist/js/' + module_path);
+                fs.readFile(file_path, 'utf8', function (err, data) {
+                  if (err) {
+                    interceptedRequest.continue();
+                  } else {
+                    interceptedRequest.respond({
+                      body: data
+                    });
+                  }
+                });
+              } else {
+                if (mockRequest) {
+                  mockRequest(interceptedRequest);
+                } else {
+                  interceptedRequest.continue();
+                }
+              }
+            }
+          });
+          _this.global.page = page;
+          page.on('close', () => {
+            _this.global.pageClosed = true
+          });
+          return page;
+        };
+
+
 # 如何使用
     npm install puppeteer-coverage --save-dev
 
